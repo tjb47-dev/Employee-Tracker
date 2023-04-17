@@ -384,7 +384,7 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
 
 // Add Role
 function addRole() {
-  var query = `SELECT d.id, d.name, r.salary AS budget
+  var query = `SELECT d.id, d.name, SUM(r.salary) AS salary
     FROM employee e
     JOIN role r
     ON e.role_id = r.id
