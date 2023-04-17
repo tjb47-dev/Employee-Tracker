@@ -139,3 +139,126 @@ function viewEmployeeByDepartment() {
     promptDepartment(departmentChoices);
   });
 }
+
+// User can choose the department list, then employees will show
+function promptDepartment(departmentChoices) {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "departmentId",
+        message: "Which department would you choose?",
+        choices: departmentChoices,
+      },
+    ])
+    .then(function (answer) {
+      console.log("answer ", answer.departmentId);
+
+      var query = `SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department 
+  FROM employee e
+  JOIN role r
+	ON e.role_id = r.id
+  JOIN department d
+  ON d.id = r.department_id
+  WHERE d.id = ?`;
+
+      connection.query(query, answer.departmentId, function (err, res) {
+        if (err) throw err;
+
+        console.table("response ", res);
+        console.log(res.affectedRows + "Employees are viewed!\n");
+
+        firstPrompt();
+      });
+    });
+}
+
+// Add an employee
+function addEmployee() {
+  console.log("Inserting an employee!")
+
+  var query =
+    `SELECT r.id, r.title, r.salary 
+      FROM role r`
+
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+
+    const roleChoices = res.map(({ id, title, salary }) => ({
+      value: id, title: `${title}`, salary: `${salary}`
+    }));
+
+    console.table(res);
+    console.log("RoleToInsert!");
+
+    promptInsert(roleChoices);
+  });
+}
+
+// User can choose the role list, then employees will show
+function promptInsert(roleChoices) {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "list",
+        name: "roleId",
+        message: "What is the employee's role?",
+        choices: roleChoices,
+      },
+    ])
+    .then(function (answer) {
+      console.log(answer);
+
+      var query = `INSERT INTO employee SET ?`;
+      // when finished prompting, insert a new item into the db with that info
+      connection.query(
+        query,
+        {
+          first_name: answer.first_name,
+          last_name: answer.last_name,
+          role_id: answer.roleId,
+          manager_id: answer.managerId,
+        },
+        function (err, res) {
+          if (err) throw err;
+
+          console.table(res);
+          console.log(res.insertedRows + "Inserted successfully!\n");
+
+          firstPrompt();
+        }
+      );
+    });
+}
+
+// Makes employee array to delete
+function removeEmployees() {
+  console.log("Deleting an employee");
+
+  var query = `SELECT e.id, e.first_name, e.last_name
+      FROM employee e`;
+
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+
+    const deleteEmployeeChoices = res.map(({ id, first_name, last_name }) => ({
+      value: id,
+      name: `${id} ${first_name} ${last_name}`,
+    }));
+
+    console.table(res);
+    console.log("ArrayToDelete!\n");
+
+    promptDelete(deleteEmployeeChoices);
+  });
+}
