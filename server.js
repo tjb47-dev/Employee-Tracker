@@ -117,12 +117,12 @@ function viewEmployee() {
 function viewEmployeeByDepartment() {
   console.log("Viewing employees by department\n");
 
-  var query = `SELECT d.id, d.name, r.salary AS budget
+  var query = `SELECT d.id, d.name, SUM(r.salary) AS salary
     FROM employee e
     LEFT JOIN role r
       ON e.role_id = r.id
     LEFT JOIN department d
-    ON d.id = r.department_id
+      ON d.id = r.department_id
     GROUP BY d.id, d.name`;
 
   connection.query(query, function (err, res) {
@@ -395,7 +395,6 @@ function addRole() {
   connection.query(query, function (err, res) {
     if (err) throw err;
 
-    // (callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any)
     const departmentChoices = res.map(({ id, name }) => ({
       value: id,
       name: `${id} ${name}`,
