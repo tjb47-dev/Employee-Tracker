@@ -50,6 +50,8 @@ Set up the database by running the schema and seed files provided in the db fold
 Start the application by running node server.
 Choose from the options presented to manage employees, roles, and departments.
 
+## Video Link
+https://drive.google.com/file/d/1jNjw1AncIoOrjCt3MSslrq9qUGOxH1-k/view?usp=sharing
 
 ## License
 
