@@ -26,7 +26,6 @@ Finally, if the user chooses to update an employee's role, they are prompted to 
 ## Installation
 
 1. Clone the repository
-    git@github.com:tjb47-dev/Employee-Tracker.git
 
 2. Navigate to the root directory of the project in your terminal.
     cd Employee-Tracker
